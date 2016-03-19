@@ -1,53 +1,69 @@
-drop table if exists zipcode;
-drop table if exists town;
-drop table if exists station;
-drop table if exists line;
-drop table if exists transport;
-drop table if exists journey;
-drop table if exists customer;
-drop table if exists billing;
-drop table if exists employee;
-drop table if exists contract;
-drop table if exists service;
-drop table if exists subscription;
-drop table if exists subscription_status;
-drop table if exists offer;
-drop table if exists fare_zone;
-drop table if exists station_line;
-drop table if exists town_zipcode;
 
-CREATE TABLE zipcode(
-    id int not null primary key
-);
-CREATE TABLE town(
-    id serial not null primary key,
-    name varchar(64) not null
-);
-CREATE TABLE station(
-    id serial not null primary key,
-    name varchar(64) not null
-);
-CREATE TABLE line(
-    id serial not null primary key,
-    code char(3) not null
-);
+
+/* sure */
+
+drop table if exists journey cascade;
+drop table if exists station_line cascade;
+drop table if exists station cascade;
+drop table if exists line cascade;
+drop table if exists transport cascade;
+drop table if exists billing cascade;
+drop table if exists contract cascade;
+drop table if exists employee cascade;
+drop table if exists customer cascade;
+drop table if exists town_zipcode cascade;
+drop table if exists town cascade;
+/* end */
+
+drop table if exists zipcode cascade;
+drop table if exists service cascade;
+drop table if exists subscription cascade;
+drop table if exists subscription_status cascade;
+drop table if exists offer cascade;
+drop table if exists fare_zone cascade;
+
 CREATE TABLE transport(
     id serial not null primary key,
     name varchar(32) not null,
     max_person int not null,
     duration int not null
 );
-CREATE TABLE journey(
+
+CREATE TABLE line(
     id serial not null primary key,
-    begining date not null,
-    ending date not null
+    code char(3) not null,
+    transport_id serial references transport(id)
 );
+
+CREATE TABLE town(
+    id serial not null primary key,
+    name varchar(64) not null
+);
+
+CREATE TABLE station(
+    id serial not null primary key,
+    name varchar(64) not null,
+    transport_id serial references transport(id),
+    line_id serial references line(id),
+    town_id serial references town(id)
+);
+
 CREATE TABLE customer(
     id serial not null primary key,
     firstname varchar(32) not null,
     lastname varchar(32) not null,
     email varchar(128) not null,
-    phone char(10) not null
+    phone char(10) not null,
+    town_id serial references town(id)
+);
+
+CREATE TABLE journey(
+    id serial not null primary key,
+    begining date not null,
+    ending date not null,
+    start_station_id serial references station(id),
+    end_station_id serial references station(id),
+    customer_id serial references customer(id)
 );
 
 CREATE TABLE billing(
@@ -55,42 +71,68 @@ CREATE TABLE billing(
     price int not null,
     month int not null,
     year int not null,
-    paid boolean not null
+    paid boolean not null,
+    customer_id serial references customer(id)
+);
+
+CREATE TABLE zipcode(
+    id int not null primary key
+);
+
+CREATE TABLE town_zipcode(
+    id serial not null primary key,
+    id_town serial references town(id),
+    id_zipcode serial references zipcode(id)
 );
 
 CREATE TABLE employee(
     id serial not null primary key,
-    login char(8) not null
+    login char(8) not null,
+    customer_id serial references customer(id)
 );
 
 CREATE TABLE contract(
     id serial not null primary key,
     departure date,
-    hire_date date not null
+    hire_date date not null,
+    employee_id serial references employee(id)
 );
 
+
+/*************** *************/
 CREATE TABLE service(
+    id serial not null primary key,
+    name varchar(32),
+    discount int
+);
+
+CREATE TABLE subscription(
+    id serial not null primary key,
+    begin date
+);
+
+CREATE TABLE subscription_status(
     id serial not null primary key,
     name varchar(32)
 );
 
-CREATE TABLE subscription(
-    id serial not null primary key
-);
-
-CREATE TABLE subscription_status(
-    id serial not null primary key
-);
 CREATE TABLE offer(
     id serial not null primary key,
-    code char(5)
+    code char(5),
+    name varchar(32),
+    price int,
+    duration int
 );
+
 CREATE TABLE fare_zone(
-    id serial not null primary key
+    id serial not null primary key,
+    price float,
+    name varchar(32)
 );
+
 CREATE TABLE station_line(
-    id serial not null primary key
+    id serial not null primary key,
+    id_station serial references station(id),
+    id_line serial references line(id)
 );
-CREATE TABLE town_zipcode(
-    id serial not null primary key
-);
+
