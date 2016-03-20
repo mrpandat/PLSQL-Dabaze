@@ -26,8 +26,9 @@ drop table if exists subscription_status cascade;
 CREATE TABLE transport(
     id serial not null primary key,
     name varchar(32) not null,
-    max_person int not null,
-    duration int not null
+    capacity int not null,
+    avg_interval int not null,
+    code varchar(3) unique
 );
 
 CREATE TABLE line(
