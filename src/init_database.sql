@@ -33,24 +33,24 @@ CREATE TABLE transport(
 
 CREATE TABLE line(
     id serial not null primary key,
-    code char(3) not null,
+    code char(3) not null unique,
     transport_id serial references transport(id)
 );
 
 CREATE TABLE town(
     id serial not null primary key,
-    name varchar(64) not null
+    name varchar(64) not null unique
 );
 
 CREATE TABLE zone(
     id serial not null primary key,
     price float,
-    name varchar(32)
+    name varchar(32) unique
 );
 
 CREATE TABLE station(
     id serial not null primary key,
-    name varchar(64) not null,
+    name varchar(64) not null unique,
     transport_id serial references transport(id),
     line_id serial references line(id),
     town_id serial references town(id),
@@ -96,13 +96,13 @@ CREATE TABLE town_zipcode(
 
 CREATE TABLE employee(
     id serial not null primary key,
-    login char(8) not null,
+    login char(8) not null unique,
     customer_id serial references customer(id)
 );
 
 CREATE TABLE service(
     id serial not null primary key,
-    name varchar(32),
+    name varchar(32) unique,
     discount int
 );
 
@@ -128,7 +128,7 @@ CREATE TABLE offer(
 
 CREATE TABLE subscription_status(
     id serial not null primary key,
-    name varchar(32)
+    name varchar(32) unique
 );
 
 CREATE TABLE subscription(
