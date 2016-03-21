@@ -1,4 +1,21 @@
 Create or replace function 
+getId(
+	name VARCHAR(64),
+	column varchar(64),
+	condition default
+)
+RETURNS BOOLEAN AS $$ begin
+
+return true;
+
+EXCEPTION
+    WHEN others THEN
+        RETURN false;
+end;$$ language plpgsql;
+
+
+
+Create or replace function 
 add_transport_type(
 	code VARCHAR(3),
 	name VARCHAR(32),
@@ -41,12 +58,15 @@ add_station(
 	town varchar(32),
 	zone int,
 	type varchar(3)
-)
+) returns boolean 
 AS $$ begin
-_
-EXCEPTION
-    WHEN others THEN
-        RETURN false;
+	insert into town(name) values (name);
+	insert into station(id,town, zone, name, type)
+	values(id,town,zone,name,type);
+	return true;
+	EXCEPTION
+    		WHEN others THEN
+       			RETURN false;
 end; $$ language plpgsql
 
 
