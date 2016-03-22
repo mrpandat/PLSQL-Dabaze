@@ -4,7 +4,7 @@
 
 drop table if exists subscription cascade;
 drop table if exists journey cascade;
-/* drop table if exists station_line cascade; */
+drop table if exists station_line cascade;
 drop table if exists station cascade;
 drop table if exists line cascade;
 drop table if exists transport cascade;
@@ -49,10 +49,9 @@ CREATE TABLE zone(
 );
 
 CREATE TABLE station(
-    id serial not null primary key,
+    id int not null primary key,
     name varchar(64) not null unique,
     transport_id serial references transport(id),
-    line_id serial references line(id),
     town_id serial references town(id),
     zone_id serial references zone(id)
 );
@@ -139,10 +138,11 @@ CREATE TABLE subscription(
     offer_id serial references offer(id)
 );
 
-/*
+
 CREATE TABLE station_line(
     id serial not null primary key,
     id_station serial references station(id),
     id_line serial references line(id)
+    position int
 );
-*/
+
