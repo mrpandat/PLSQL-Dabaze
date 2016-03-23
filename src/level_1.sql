@@ -130,6 +130,9 @@ select transport.name as type, count(*) as stations from station join transport 
 
 Create or replace view view_line_duration as
 select transport.name as type, id_line as line, sum(transport.avg_interval) as minutes from station_line join station on station_line.id_station = station.id join transport on transport.id = station.transport_id group by id_line, transport.name order by type, line;
+
+Create or replace view view_a_station_capacity as 
+select station.name as station,transport.capacity as capacity from station join transport on station.transport_id = transport.id where lower(SUBSTRING(station.name, 1, 1))='a' order by station.name, capacity;
 /****
 Create or replace function 
 
