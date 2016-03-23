@@ -1,6 +1,6 @@
 select add_transport_type('TMW','tramway',100,2);
 select add_transport_type('BUS','bus',50,4);
-select add_transport_type('RER','train',500,5);
+select add_transport_type('RER','train',350,5);
 select add_transport_type('MTR','metro',300,3);
 
 
@@ -23,6 +23,7 @@ select add_station(7, 'Saint-maur', 'Saint-Maur', 5, 'RER');
 select add_station(8, 'Joinville', 'Joinville', 4, 'RER');
 select add_station(9, 'Nogent sur marne', 'Nogent', 3, 'RER');
 select add_station(10, 'Fontenay sous bois', 'Fontenay', 3, 'RER');
+select add_station(11, 'Porte d italie', 'Villejuif', 2, 'RER');
 
 select add_line('RRA','RER');
 select add_line('MT1','MTR');
@@ -40,3 +41,4 @@ select add_station_to_line(7, 'RRA',1);
 select add_station_to_line(8, 'RRA',2);
 select add_station_to_line(9, 'RRA',3);
 select add_station_to_line(10, 'RRA',4);
+select add_station_to_line(11, 'RRA',5);

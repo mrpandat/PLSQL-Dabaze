@@ -116,6 +116,11 @@ EXCEPTION
 
 end; $$ language plpgsql;
 
+Create or replace view view_transport_50_300_users as
+select name as transport from transport where capacity between 50 and 300 order by name;
+
+Create or replace view view_stations_from_villejuif as
+select station.name from station join town on town.id = station.town_id where lower(town.name) = 'villejuif' order by station.name;
 
 /****
 Create or replace function 
