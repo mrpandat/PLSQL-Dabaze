@@ -98,15 +98,22 @@ end; $$ language plpgsql;
 
 Create or replace function 
 add_station_to_line(
-	station int,
-	line varchar(3),
-	pos int
+	_station int,
+	_line varchar(3),
+	_pos int
 ) returns boolean
-AS $$ begin
-/* revoir la table station_line */
+AS $$ 
+declare
+    line_id int := (select id from line where line.code = _line);
+begin
+    insert into station_line(id_station, id_line, position)
+    values(_station, line_id, _pos);
+    return true;
+
 EXCEPTION
     WHEN others THEN
         RETURN false;
+
 end; $$ language plpgsql;
 
 

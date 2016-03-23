@@ -142,7 +142,8 @@ CREATE TABLE subscription(
 CREATE TABLE station_line(
     id serial not null primary key,
     id_station serial references station(id),
-    id_line serial references line(id)
-    position int
+    id_line serial references line(id),
+    position int,
+    unique(position, id_line)
 );
 
