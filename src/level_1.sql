@@ -122,6 +122,14 @@ select name as transport from transport where capacity between 50 and 300 order 
 Create or replace view view_stations_from_villejuif as
 select station.name from station join town on town.id = station.town_id where lower(town.name) = 'villejuif' order by station.name;
 
+Create or replace view view_stations_zones as
+select station.name as station, zone.name as zone from station join zone on station.zone_id = zone.id order by zone.id, station.name;
+
+Create or replace view view_nb_station_type as
+select transport.name as type, count(*) as stations from station join transport on station.transport_id = transport.id join zone on station.zone_id = zone.id group by transport.name order by stations DESC, type;
+
+Create or replace view view_line_duration as
+select transport.name as type, id_line as line, sum(transport.avg_interval) as minutes from station_line join station on station_line.id_station = station.id join transport on transport.id = station.transport_id group by id_line, transport.name order by type, line;
 /****
 Create or replace function 
 
