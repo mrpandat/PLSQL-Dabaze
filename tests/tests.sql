@@ -101,6 +101,28 @@ else
     raise notice '********* TEST 9 FAIL *********';
 end if;
 
+if (
+((select get_price_station(1)) = 40.5) AND
+((select get_price_station(9)) = 52.7) AND
+((select get_price_station(8)) = 42.5) AND
+((select get_price_station(7)) = 78.3)
+) then
+    raise notice '********** TEST 10 OK *********';
+else
+    raise notice '********* TEST 10 FAIL ********';
+end if;
+
+if (
+((select get_cost_travel(1,9)) = 93.2) AND
+((select get_cost_travel(9,1)) = 93.2) AND
+((select get_cost_travel(8,7)) = 120.8) AND
+((select get_cost_travel(7,1)) = 118.8)
+) then
+    raise notice '********** TEST 11 OK *********';
+else
+    raise notice '********* TEST 11 FAIL ********';
+end if;
+
 return true; 
 EXCEPTION
      WHEN others THEN
