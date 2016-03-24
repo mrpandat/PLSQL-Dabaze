@@ -133,6 +133,68 @@ select transport.name as type, id_line as line, sum(transport.avg_interval) as m
 
 Create or replace view view_a_station_capacity as 
 select station.name as station,transport.capacity as capacity from station join transport on station.transport_id = transport.id where lower(SUBSTRING(station.name, 1, 1))='a' order by station.name, capacity;
+
+
+Create or replace function 
+list_station_in_line(
+    _line_code VARCHAR(3)
+) returns setof VARCHAR(64)
+AS $$ begin
+
+    return QUERY(
+        select station.name from station_line 
+        join station on station_line.id_station = station.id 
+        join line on station_line.id_line = line.id 
+        where line.code = _line_code
+        order by position ASC
+    );
+end; $$ language plpgsql;
+
+
+Create or replace function 
+list_types_in_zone(_zone INT)
+RETURNS setof VARCHAR(32)
+AS $$ begin
+    return QUERY(select distinct transport.name from station join transport on station.transport_id = transport.id join zone on station.zone_id = zone.id where zone.id = _zone order by transport.name
+);
+end; $$ language plpgsql;
+
+Create or replace function 
+get_price_station(_station int)
+returns float
+AS $$ 
+declare 
+    a float := (select price from station join zone on zone.id = station.zone_id where station.id = _station);
+begin
+    if (a is not null) then
+        return a;
+    else
+        return 0;
+    end if;
+EXCEPTION
+    WHEN others THEN
+        RETURN 0;
+end; $$ language plpgsql;
+
+Create or replace function 
+get_cost_travel(station_start INT,station_end INT)
+RETURNS FLOAT
+AS $$
+declare
+  a float := (select get_price_station(station_start));
+  b float := (select get_price_station(station_end));
+begin
+    if (a = 0 OR b = 0) then
+        return 0;
+    else
+        return a+b;
+    end if;
+EXCEPTION
+    WHEN others THEN
+        RETURN 0;
+end; $$ language plpgsql;
+
+
 /****
 Create or replace function 
 
@@ -142,14 +204,4 @@ EXCEPTION
     WHEN others THEN
         RETURN false;
 end; $$ language plpgsql;
-
-
-
-
-
-
-
-
-
-
 **/
