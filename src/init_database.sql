@@ -56,13 +56,27 @@ CREATE TABLE station(
     zone_id serial references zone(id)
 );
 
+CREATE TABLE zipcode(
+    id serial not null primary key,
+    code varchar(5)
+);
+
+CREATE TABLE town_zipcode(
+    id serial not null primary key,
+    id_town serial references town(id),
+    id_zipcode serial references zipcode(id),
+    unique(id_town,id_zipcode)
+);
+
+
 CREATE TABLE customer(
     id serial not null primary key,
     firstname varchar(32) not null,
     lastname varchar(32) not null,
     email varchar(128) not null,
     phone char(10) not null,
-    town_id serial references town(id)
+    address TEXT not null,
+    town_zipcode_id serial references town_zipcode(id)
 );
 
 CREATE TABLE journey(
@@ -83,15 +97,6 @@ CREATE TABLE billing(
     customer_id serial references customer(id)
 );
 
-CREATE TABLE zipcode(
-    id int not null primary key
-);
-
-CREATE TABLE town_zipcode(
-    id serial not null primary key,
-    id_town serial references town(id),
-    id_zipcode serial references zipcode(id)
-);
 
 CREATE TABLE employee(
     id serial not null primary key,

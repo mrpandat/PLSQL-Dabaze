@@ -52,7 +52,6 @@ begin
         		RETURN false;
 end; $$ language plpgsql;
 
-
 Create or replace function 
 add_station(
 	_id int,
