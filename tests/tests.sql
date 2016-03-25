@@ -144,11 +144,19 @@ else
     raise notice '********* TESTS 12 FAIL ********';
 end if;
 
+if (
+(select add_offer('AAAAA','Imagine r', 300, 12, 1,5)) AND
+(select add_offer('AAAAA','La copieuse', 300, 12, 1,5)) = false AND
+(select add_offer('BBBBB','Offre pigeon', 1000, 1, 1,2)) AND
+(select add_offer('CCCCC','Offre généreuse', 10, 24, 1,4))
+) then
+    raise notice '********** TESTS 13 OK *********';
+else
+    raise notice '********* TESTS 13 FAIL ********';
+end if;
+
 
 return true; 
-EXCEPTION
-     WHEN others THEN
-         RETURN false;
 end; $$ language plpgsql;
 
 select test_expression();

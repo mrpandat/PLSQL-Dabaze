@@ -66,14 +66,52 @@ begin
 end; $$ language plpgsql;
 
 
-
-/****
 Create or replace function 
-
+add_offer(
+_code VARCHAR(5), _name VARCHAR(32), _price FLOAT,
+_nb_month INT, zone_from INT, zone_to INT)
+RETURNS BOOLEAN
 AS $$ begin
-
+    if _nb_month <= 0
+     OR (select id from zone where zone.id = zone_from) is null 
+     OR (select id from zone where zone.id = zone_to) is null
+    then
+        return false;
+    end if;
+    insert into offer(code,name, price, duration, zone_from_id, zone_to_id)
+    values (_code, _name, _price, _nb_month, zone_from, zone_to);
+    return true;
 EXCEPTION
     WHEN others THEN
         RETURN false;
+
+end; $$ language plpgsql;
+
+
+create or replace function 
+add_subscription(_num INT, _email VARCHAR(128), _code VARCHAR(5), _date_sub DATE)
+ RETURNS BOOLEAN
+as $$ 
+declare
+    user_id int := (select id from customer where _email = customer.email);
+    offer_id int := (select id from offer where _code = offer.code);
+begin
+    if user_id is null then
+        return false;
+    end if;    
+    return true;
+exception
+    when others then
+        return false;
+end; $$ language plpgsql;
+
+/****
+create or replace function 
+
+as $$ begin
+
+exception
+    when others then
+        return false;
 end; $$ language plpgsql;
 **/

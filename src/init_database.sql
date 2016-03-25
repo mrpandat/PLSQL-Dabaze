@@ -122,22 +122,23 @@ CREATE TABLE contract(
 
 CREATE TABLE offer(
     id serial not null primary key,
-    code char(5),
-    name varchar(32),
-    price int,
-    duration int,
-    highest_zone_id serial references zone(id),
-    lowest_zone_id serial references zone(id)
+    code varchar(5) not null unique,
+    name varchar(32) not null,
+    price float not null,
+    duration int not null,
+    zone_to_id serial references zone(id),
+    zone_from_id serial references zone(id)
 );
 
 CREATE TABLE subscription_status(
     id serial not null primary key,
-    name varchar(32) unique
+    name varchar(32) unique not null
 );
 
 CREATE TABLE subscription(
     id serial not null primary key,
-    begin date,
+    begin date not null,
+    number int not null unique,
     status_id serial references subscription_status(id),
     customer_id serial references customer(id),
     offer_id serial references offer(id)
@@ -148,7 +149,7 @@ CREATE TABLE station_line(
     id serial not null primary key,
     id_station serial references station(id),
     id_line serial references line(id),
-    position int,
+    position int not null,
     unique(position, id_line)
 );
 
