@@ -1,16 +1,22 @@
 Create or replace function 
     test_expression() RETURNS boolean
 AS $$
+declare
+a boolean;
 begin
+
+raise notice '-----------------------------------';
+raise notice '|          THRESHOLD 1            |';
+raise notice '-----------------------------------';
 if (
         (select add_transport_type('TMW','tramway',100,2)) AND
         (select add_transport_type('BUS','bus',50,4)) AND
         (select add_transport_type('RER','train',350,5)) AND
         (select add_transport_type('MTR','metro',300,3))
     ) then
-    raise notice '********** TEST 1 OK **********';
+    raise notice '********** TESTS 1 OK **********';
 else
-    raise notice '********* TEST 1 FAIL *********';
+    raise notice '********* TESTS 1 FAIL *********';
 end if;
 
 if(
@@ -20,9 +26,9 @@ if(
     (select add_zone('zone_4',42.5)) AND
     (select add_zone('zone_5',78.3))
 ) then
-    raise notice '********** TEST 2 OK **********';
+    raise notice '********** TESTS 2 OK **********';
 else
-    raise notice '********* TEST 2 FAIL *********';
+    raise notice '********* TESTS 2 FAIL *********';
 end if;
 
 if(
@@ -30,9 +36,9 @@ if(
 (select add_station(2, 'Berault', 'Vincennes', 2, 'MTR')) AND
 (select add_station(3, 'Saint-mandé', 'Vincennes', 2, 'MTR'))
 ) then
-    raise notice '********** TEST 3 OK **********';
+    raise notice '********** TESTS 3 OK **********';
 else
-    raise notice '********* TEST 3 FAIL *********';
+    raise notice '********* TESTS 3 FAIL *********';
 end if;
 
 
@@ -41,9 +47,9 @@ if(
 (select add_station(5, 'Alexandre Dumas', 'Paris', 1, 'MTR')) AND
 (select add_station(6, 'Père Lachaise', 'Paris', 1, 'MTR'))
 ) then
-    raise notice '********** TEST 4 OK **********';
+    raise notice '********** TESTS 4 OK **********';
 else
-    raise notice '********* TEST 4 FAIL *********';
+    raise notice '********* TESTS 4 FAIL *********';
 end if;
 
 
@@ -54,9 +60,9 @@ if(
 (select add_station(10, 'Fontenay sous bois', 'Fontenay', 3, 'RER')) AND
 (select add_station(11, 'Porte d italie', 'Villejuif', 2, 'RER'))
 ) then
-    raise notice '********** TEST 5 OK **********';
+    raise notice '********** TESTS 5 OK **********';
 else
-    raise notice '********* TEST 5 FAIL *********';
+    raise notice '********* TESTS 5 FAIL *********';
 end if;
 
 if (
@@ -64,9 +70,9 @@ if (
 (select add_line('MT1','MTR')) AND
 (select add_line('MT2','MTR'))
 ) then
-    raise notice '********** TEST 6 OK **********';
+    raise notice '********** TESTS 6 OK **********';
 else
-    raise notice '********* TEST 6 FAIL *********';
+    raise notice '********* TESTS 6 FAIL *********';
 end if;
 
 if(
@@ -74,9 +80,9 @@ if(
 (select add_station_to_line(2, 'MT1',2)) AND
 (select add_station_to_line(3, 'MT1',3))
 ) then
-    raise notice '********** TEST 7 OK **********';
+    raise notice '********** TESTS 7 OK **********';
 else
-    raise notice '********* TEST 7 FAIL *********';
+    raise notice '********* TESTS 7 FAIL *********';
 end if;
 
 if (
@@ -84,9 +90,9 @@ if (
 (select add_station_to_line(5, 'MT2',2)) AND
 (select add_station_to_line(6, 'MT2',3))
 ) then
-    raise notice '********** TEST 8 OK **********';
+    raise notice '********** TESTS 8 OK **********';
 else
-    raise notice '********* TEST 8 FAIL *********';
+    raise notice '********* TESTS 8 FAIL *********';
 end if;
 
 if (
@@ -96,9 +102,9 @@ if (
 (select add_station_to_line(10, 'RRA',4)) AND
 (select add_station_to_line(11, 'RRA',5))
 ) then
-    raise notice '********** TEST 9 OK **********';
+    raise notice '********** TESTS 9 OK **********';
 else
-    raise notice '********* TEST 9 FAIL *********';
+    raise notice '********* TESTS 9 FAIL *********';
 end if;
 
 if (
@@ -107,9 +113,9 @@ if (
 ((select get_price_station(8)) = 42.5) AND
 ((select get_price_station(7)) = 78.3)
 ) then
-    raise notice '********** TEST 10 OK *********';
+    raise notice '********* TESTS 10  OK *********';
 else
-    raise notice '********* TEST 10 FAIL ********';
+    raise notice '******** TESTS 10 FAIL ********';
 end if;
 
 if (
@@ -118,10 +124,26 @@ if (
 ((select get_cost_travel(8,7)) = 120.8) AND
 ((select get_cost_travel(7,1)) = 118.8)
 ) then
-    raise notice '********** TEST 11 OK *********';
+    raise notice '********* TESTS 11  OK *********';
 else
-    raise notice '********* TEST 11 FAIL ********';
+    raise notice '******** TESTS 11 FAIL ********';
 end if;
+
+raise notice '-----------------------------------';
+raise notice '|          THRESHOLD 2            |';
+raise notice '-----------------------------------';
+if (
+(select add_person('Valeera', 'Siffeh', 'v.siffeh@hotmail.fr', '0600000000','23 avenue galilée', 'Champigny', '94200')) AND
+(select add_person('Jaina', 'Ouisarde', 'j.ouisarde@outlook.fr', '0611111111','12 boulevard perroquet', 'Vincennes', '94500')) AND
+(select add_person('Uther', 'Pahladain', 'u.pah@hotmail.fr', '0622222222','1 impasse galilée', 'Saint maur', '94100')) AND
+(select add_person('Anduin', 'Prieste', 'anduinlecho94@gmail.com', '0733333333','3bis rue dark', 'Vincennes', '94500')) AND
+(select add_person('Rexxar', 'Eunte', 'r.eunte@hotmail.fr', '0744444444','7 avenue de gaule', 'Joinville', '94200')) 
+) then
+    raise notice '********** TESTS 12 OK *********';
+else
+    raise notice '********* TESTS 12 FAIL ********';
+end if;
+
 
 return true; 
 EXCEPTION

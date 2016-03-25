@@ -73,8 +73,8 @@ CREATE TABLE customer(
     id serial not null primary key,
     firstname varchar(32) not null,
     lastname varchar(32) not null,
-    email varchar(128) not null,
-    phone char(10) not null,
+    email varchar(128) not null unique,
+    phone char(10) not null unique,
     address TEXT not null,
     town_zipcode_id serial references town_zipcode(id)
 );

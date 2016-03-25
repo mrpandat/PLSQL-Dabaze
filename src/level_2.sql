@@ -44,19 +44,25 @@ add_person (
  RETURNS BOOLEAN 
 AS $$
 declare
-	a int :=(select get_or_create_town(_town));
-	b int :=(select get_or_create_zipcode(_zipcode));
-	c int :=(select id_zipcode from town_zipcode where town_zipcode.id_zipcode = a);
-	d int;
+	tid int :=(select get_or_create_town(_town));
+	zid int :=(select get_or_create_zipcode(_zipcode));
+
+	tzid int:= (select id from town_zipcode where town_zipcode.id_zipcode = zid and town_zipcode.id_town = tid);
 begin
-	if c is NULL then
+	
+    if tzid is NULL then
 		insert into town_zipcode(id_town,id_zipcode)
-		values (a,b);
+		values (tid,zid);
 	end if;
-	d := (select id from town_zipcode where town_zipcode.id_zipcode = b and town_zipcode.id_town = a);
-	insert into customer(firstname, lastname, email, phone, address, town_zipcode_id)
-	values (_firstname, _lastname, _email, _phone, _address, d);
+	tzid := (select id from town_zipcode where town_zipcode.id_zipcode = zid and town_zipcode.id_town = tid);
+	
+
+    insert into customer(firstname, lastname, email, phone, address, town_zipcode_id)
+	values (_firstname, _lastname, _email, _phone, _address, tzid);
 	return true;
+    EXCEPTION
+        WHEN others THEN
+            RETURN false;
 end; $$ language plpgsql;
 
 
