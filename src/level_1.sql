@@ -182,12 +182,29 @@ AS $$
 declare
   a float := (select get_price_station(station_start));
   b float := (select get_price_station(station_end));
+  zone_s int := (select zone_id from station where station.id = station_start);
+  zone_e int := (select zone_id from station where station.id = station_end);
+  zone_i int := 0;
+  price float := 0;
+  price_zone float := 0;
+  zone int := 0;
 begin
+    if (zone_s > zone_e) then
+        zone_i := zone_e;
+        zone_e := zone_s;
+        zone_s := zone_i;
+    end if;
     if (a = 0 OR b = 0) then
         return 0;
-    else
-        return a+b;
+    elsif ( zone_s = zone_e ) then
+         return a;
     end if;
+    for price_zone in 
+    (select distinct(zone.price) from station join zone on station.zone_id = zone.id where station.zone_id between zone_s and zone_e) 
+        LOOP
+            price := price + price_zone;
+        END LOOP;
+    return price;
 EXCEPTION
     WHEN others THEN
         RETURN 0;

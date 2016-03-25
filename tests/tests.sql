@@ -119,14 +119,14 @@ else
 end if;
 
 if (
-((select get_cost_travel(1,9)) = 93.2) AND
-((select get_cost_travel(9,1)) = 93.2) AND
-((select get_cost_travel(8,7)) = 120.8) AND
-((select get_cost_travel(7,1)) = 118.8)
+((select get_cost_travel(1,2)) = 40.5) AND
+((select get_cost_travel(1,4)) = 140.5) AND
+((select get_cost_travel(6,7)) = 314) AND
+((select get_cost_travel(8,9)) = 95.2)
 ) then
     raise notice '********* TESTS 11  OK *********';
 else
-    raise notice '******** TESTS 11 FAIL ********';
+    raise notice '********* TESTS 11 FAIL ********';
 end if;
 
 raise notice '-----------------------------------';
