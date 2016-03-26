@@ -1,7 +1,3 @@
-
-
-/* sure */
-
 drop table if exists subscription cascade;
 drop table if exists journey cascade;
 drop table if exists station_line cascade;
@@ -16,12 +12,9 @@ drop table if exists town_zipcode cascade;
 drop table if exists town cascade;
 drop table if exists offer cascade;
 drop table if exists zone cascade;
-
 drop table if exists zipcode cascade;
 drop table if exists service cascade;
 drop table if exists subscription_status cascade;
-
-
 
 CREATE TABLE transport(
     id serial not null primary key,
@@ -130,16 +123,17 @@ CREATE TABLE offer(
     zone_from_id serial references zone(id)
 );
 
+/*
 CREATE TABLE subscription_status(
     id serial not null primary key,
     name varchar(32) unique not null
 );
-
+*/
 CREATE TABLE subscription(
     id serial not null primary key,
     begin date not null,
     number int not null unique,
-    status_id serial references subscription_status(id),
+    status varchar(32),
     customer_id serial references customer(id),
     offer_id serial references offer(id)
 );

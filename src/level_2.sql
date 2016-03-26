@@ -93,12 +93,14 @@ add_subscription(_num INT, _email VARCHAR(128), _code VARCHAR(5), _date_sub DATE
  RETURNS BOOLEAN
 as $$ 
 declare
-    user_id int := (select id from customer where _email = customer.email);
-    offer_id int := (select id from offer where _code = offer.code);
+    _user_id int := (select id from customer where _email = customer.email);
+    _offer_id int := (select id from offer where _code = offer.code);
 begin
-    if user_id is null then
-        return false;
-    end if;    
+    if _user_id is null or _offer_id is null then
+	return false;
+    end if;
+    insert into subscription(begin, number, status, customer_id, offer_id)
+	values(_date_sub, _num, 'Incomplete', _user_id, _offer_id);
     return true;
 exception
     when others then
