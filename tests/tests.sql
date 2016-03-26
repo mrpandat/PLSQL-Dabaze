@@ -1,4 +1,4 @@
-Create or replace function 
+Create or replace function
     test_expression() RETURNS boolean
 AS $$
 declare
@@ -137,7 +137,7 @@ if (
 (select add_person('Jaina', 'Ouisarde', 'j.ouisarde@outlook.fr', '0611111111','12 boulevard perroquet', 'Vincennes', '94500')) AND
 (select add_person('Uther', 'Pahladain', 'u.pah@hotmail.fr', '0622222222','1 impasse galilée', 'Saint maur', '94100')) AND
 (select add_person('Anduin', 'Prieste', 'anduinlecho94@gmail.com', '0733333333','3bis rue dark', 'Vincennes', '94500')) AND
-(select add_person('Rexxar', 'Eunte', 'r.eunte@hotmail.fr', '0744444444','7 avenue de gaule', 'Joinville', '94200')) 
+(select add_person('Rexxar', 'Eunte', 'r.eunte@hotmail.fr', '0744444444','7 avenue de gaule', 'Joinville', '94200'))
 ) then
     raise notice '********** TESTS 12 OK *********';
 else
@@ -160,15 +160,26 @@ if (
 (select add_subscription(2,'j.ouisarde@outlook.fr','AAAAA','01/02/2016')) AND
 (select add_subscription(2,'r.eunte@hotmail.fr','AAAAA','03/03/2015') = false) AND
 (select add_subscription(3,'anduinlecho94@gmail.com','BBBBB','04/10/2016')) AND
-(select add_subscription(4,'u.pah@hotmail.fr','CCCCC','04/10/2015'))
+(select add_subscription(4,'anduinlecho94@gmail.com','CCCCC','04/10/2015') = false)
 ) then
     raise notice '********** TESTS 14 OK *********';
 else
     raise notice '********* TESTS 14 FAIL ********';
 end if;
 
+if (
+(select update_status(1,'Registered')) AND
+(select update_status(1,'Regizstered')) = FALSE AND
+(select update_status(2,'Incomplete')) AND
+(select update_status(5,'Pending'))
+) then
+    raise notice '********** TESTS 15 OK *********';
+else
+    raise notice '********* TESTS 15 FAIL ********';
+end if;
 
-return true; 
+
+return true;
 end; $$ language plpgsql;
 
 select test_expression();

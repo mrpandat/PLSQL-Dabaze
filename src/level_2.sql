@@ -87,6 +87,22 @@ EXCEPTION
 
 end; $$ language plpgsql;
 
+create or replace function
+customer_can_subscribe(_email VARCHAR(128))
+  RETURNS BOOLEAN
+as $$
+begin
+  if(
+  select status from subscription
+  join customer on customer.id = subscription.customer_id
+  where customer.email = _email AND (subscription.status = 'Incomplete' OR subscription.status='Pending')) is null THEN
+    return true;
+  END IF;
+  RETURN false;
+exception
+    when others then
+        return false;
+end; $$ language plpgsql;
 
 create or replace function 
 add_subscription(_num INT, _email VARCHAR(128), _code VARCHAR(5), _date_sub DATE)
@@ -96,12 +112,29 @@ declare
     _user_id int := (select id from customer where _email = customer.email);
     _offer_id int := (select id from offer where _code = offer.code);
 begin
-    if _user_id is null or _offer_id is null then
+    if _user_id is null or _offer_id is null or (select customer_can_subscribe(_email)) = false then
 	return false;
     end if;
     insert into subscription(begin, number, status, customer_id, offer_id)
 	values(_date_sub, _num, 'Incomplete', _user_id, _offer_id);
     return true;
+exception
+    when others then
+        return false;
+end; $$ language plpgsql;
+
+
+create or replace function
+update_status(
+  _num INT,
+  _new_status VARCHAR(32))
+  RETURNS BOOLEAN
+as $$ begin
+    if _new_status != 'Registered' AND _new_status != 'Pending' AND _new_status != 'Incomplete' THEN
+      return FALSE;
+    END IF;
+  UPDATE subscription set status = _new_status where subscription.number = _num;
+  return true;
 exception
     when others then
         return false;
