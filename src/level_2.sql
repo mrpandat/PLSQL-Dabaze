@@ -140,6 +140,18 @@ exception
         return false;
 end; $$ language plpgsql;
 
+create or replace function
+update_offer_price ( _offer_code VARCHAR (5), _price FLOAT ) RETURNS BOOLEAN
+as $$ begin
+  IF _price < 0 or (select code from offer WHERE offer.code= _offer_code) is null THEN
+    return false;
+  END IF;
+  UPDATE offer SET price = _price WHERE offer.code= _offer_code;
+  return true;
+exception
+    when others then
+        return false;
+end; $$ language plpgsql;
 /****
 create or replace function 
 
@@ -149,4 +161,5 @@ exception
     when others then
         return false;
 end; $$ language plpgsql;
+
 **/

@@ -179,6 +179,18 @@ else
 end if;
 
 
+if (
+(select update_offer_price('AAAAA', 250)) AND
+(select update_offer_price('BBBBB', -250)) = false AND
+(select update_offer_price('zgpoijzeop', 250)) = false AND
+(select update_offer_price('CCCCC', 0))
+) then
+    raise notice '********** TESTS 16 OK *********';
+else
+    raise notice '********* TESTS 16 FAIL ********';
+end if;
+
+
 return true;
 end; $$ language plpgsql;
 
