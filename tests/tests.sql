@@ -185,6 +185,7 @@ BEGIN
     (SELECT add_subscription(1, 'v.siffeh@hotmail.fr', 'AAAAA', '01/02/2016')) AND
     (SELECT add_subscription(2, 'j.ouisarde@outlook.fr', 'AAAAA', '01/02/2014')) AND
     (SELECT add_subscription(2, 'r.eunte@hotmail.fr', 'AAAAA', '03/03/2015') = FALSE) AND
+    (SELECT add_subscription(5, 'r.eunte@hotmail.fr', 'AAAAA', '03/03/2015')) AND
     (SELECT add_subscription(3, 'anduinlecho94@gmail.com', 'BBBBB', '04/10/2015')) AND
     (SELECT add_subscription(4, 'anduinlecho94@gmail.com', 'CCCCC', '04/10/2015') = FALSE)
   )
@@ -198,7 +199,7 @@ BEGIN
     (SELECT update_status(1, 'Registered')) AND
     (SELECT update_status(1, 'Regizstered')) = FALSE AND
     (SELECT update_status(2, 'Incomplete')) AND
-    (SELECT update_status(5, 'Pending'))
+    (SELECT update_status(5, 'Registered'))
   )
   THEN
     RAISE NOTICE '********** TESTS 15 OK *********';

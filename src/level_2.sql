@@ -221,11 +221,60 @@ CREATE OR REPLACE VIEW view_pending_subscriptions AS
   WHERE subscription.status = 'Pending';
 
 CREATE OR REPLACE VIEW view_old_subscription AS
-select customer.lastname, customer.firstname, offer.name as subscription, subscription.status
-from subscription
-  join customer on subscription.customer_id = customer.id
-  join offer on subscription.offer_id = offer.id
-where extract(YEAR from age(now(), subscription.begin::TIMESTAMP)) >= 1;
+  SELECT
+    customer.lastname,
+    customer.firstname,
+    offer.name AS subscription,
+    subscription.status
+  FROM subscription
+    JOIN customer ON subscription.customer_id = customer.id
+    JOIN offer ON subscription.offer_id = offer.id
+  WHERE extract(YEAR FROM age(now(), subscription.begin :: TIMESTAMP)) >= 1;
+
+
+CREATE OR REPLACE FUNCTION
+  list_station_near_user(_user VARCHAR(128))
+  RETURNS SETOF VARCHAR(64)
+AS $$ BEGIN
+  RETURN QUERY (
+    SELECT DISTINCT lower(station.name) :: VARCHAR(64) AS station_name
+    FROM customer
+      JOIN town_zipcode ON customer.town_zipcode_id = town_zipcode.id
+      JOIN town ON town_zipcode.id_town = town.id
+      JOIN station ON town.id = station.town_id
+    WHERE _user = customer.email
+    ORDER BY station_name
+  );
+END; $$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION
+  list_subscribers(_code_offer VARCHAR(5))
+  RETURNS SETOF VARCHAR(65)
+AS $$ BEGIN
+  RETURN QUERY (
+    SELECT DISTINCT concat(customer.firstname, ' ', customer.lastname) :: VARCHAR(65) AS full_name
+    FROM customer
+      JOIN subscription ON customer.id = subscription.customer_id
+      JOIN offer ON subscription.offer_id = offer.id
+    WHERE _code_offer = offer.code
+    ORDER BY full_name
+  );
+END; $$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION
+  list_subscription(_email VARCHAR(128), _date DATE)
+  RETURNS SETOF VARCHAR(5)
+AS $$ BEGIN
+  RETURN QUERY (
+    SELECT offer.code as offer_code
+    FROM offer
+      JOIN subscription ON offer.id = subscription.offer_id
+      JOIN customer ON subscription.customer_id = customer.id
+      WHERE subscription.status = 'Registered'
+            AND customer.email = _email
+            AND subscription.begin = _date
+    ORDER BY offer.code);
+END; $$ LANGUAGE plpgsql;
 
 /****
 create or replace function 
