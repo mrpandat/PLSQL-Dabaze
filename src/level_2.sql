@@ -1,157 +1,232 @@
-Create or replace function
-get_or_create_town(
-        _name varchar(32)
-) returns int
+CREATE OR REPLACE FUNCTION
+  get_or_create_town(
+  _name VARCHAR(32)
+)
+  RETURNS INT
 AS $$
-declare
-town_id int := (select id from town where town.name = _name);
-begin
-        if town_id is NULL then
-                insert into town(name) values (_name);
-        end if;
-        town_id := (select id from town where town.name = _name);
-        return town_id;
-        EXCEPTION
-                WHEN others THEN
-                        RETURN false;
-end; $$ language plpgsql;
-
-Create or replace function
-get_or_create_zipcode(
-        _code varchar(5)
-) returns int
-AS $$
-declare
-_zipcode_id int := (select id from zipcode where zipcode.code = _code);
-begin
-        if _zipcode_id is NULL then
-                insert into zipcode(code) values (_code);
-        end if;
-        _zipcode_id := (select id from zipcode where zipcode.code = _code);
-        return _zipcode_id;
-        EXCEPTION
-                WHEN others THEN
-                        RETURN false;
-end; $$ language plpgsql;
-
-
-
-Create or replace function 
-add_person (
-	_firstname VARCHAR (32) , _lastname VARCHAR (32) , _email VARCHAR (128) , 
-	_phone VARCHAR (10) , _address TEXT , _town VARCHAR (32) ,
-	_zipcode VARCHAR (5))
- RETURNS BOOLEAN 
-AS $$
-declare
-	tid int :=(select get_or_create_town(_town));
-	zid int :=(select get_or_create_zipcode(_zipcode));
-
-	tzid int:= (select id from town_zipcode where town_zipcode.id_zipcode = zid and town_zipcode.id_town = tid);
-begin
-	
-    if tzid is NULL then
-		insert into town_zipcode(id_town,id_zipcode)
-		values (tid,zid);
-	end if;
-	tzid := (select id from town_zipcode where town_zipcode.id_zipcode = zid and town_zipcode.id_town = tid);
-	
-
-    insert into customer(firstname, lastname, email, phone, address, town_zipcode_id)
-	values (_firstname, _lastname, _email, _phone, _address, tzid);
-	return true;
-    EXCEPTION
-        WHEN others THEN
-            RETURN false;
-end; $$ language plpgsql;
-
-
-Create or replace function 
-add_offer(
-_code VARCHAR(5), _name VARCHAR(32), _price FLOAT,
-_nb_month INT, zone_from INT, zone_to INT)
-RETURNS BOOLEAN
-AS $$ begin
-    if _nb_month <= 0
-     OR (select id from zone where zone.id = zone_from) is null 
-     OR (select id from zone where zone.id = zone_to) is null
-    then
-        return false;
-    end if;
-    insert into offer(code,name, price, duration, zone_from_id, zone_to_id)
-    values (_code, _name, _price, _nb_month, zone_from, zone_to);
-    return true;
-EXCEPTION
-    WHEN others THEN
-        RETURN false;
-
-end; $$ language plpgsql;
-
-create or replace function
-customer_can_subscribe(_email VARCHAR(128))
-  RETURNS BOOLEAN
-as $$
-begin
-  if(
-  select status from subscription
-  join customer on customer.id = subscription.customer_id
-  where customer.email = _email AND (subscription.status = 'Incomplete' OR subscription.status='Pending')) is null THEN
-    return true;
+DECLARE
+  town_id INT := (SELECT id
+                  FROM town
+                  WHERE town.name = _name);
+BEGIN
+  IF town_id IS NULL
+  THEN
+    INSERT INTO town (name) VALUES (_name);
   END IF;
-  RETURN false;
-exception
-    when others then
-        return false;
-end; $$ language plpgsql;
+  town_id := (SELECT id
+              FROM town
+              WHERE town.name = _name);
+  RETURN town_id;
+  EXCEPTION
+  WHEN OTHERS THEN
+    RETURN FALSE;
+END; $$ LANGUAGE plpgsql;
 
-create or replace function 
-add_subscription(_num INT, _email VARCHAR(128), _code VARCHAR(5), _date_sub DATE)
- RETURNS BOOLEAN
-as $$ 
-declare
-    _user_id int := (select id from customer where _email = customer.email);
-    _offer_id int := (select id from offer where _code = offer.code);
-begin
-    if _user_id is null or _offer_id is null or (select customer_can_subscribe(_email)) = false then
-	return false;
-    end if;
-    insert into subscription(begin, number, status, customer_id, offer_id)
-	values(_date_sub, _num, 'Incomplete', _user_id, _offer_id);
-    return true;
-exception
-    when others then
-        return false;
-end; $$ language plpgsql;
+CREATE OR REPLACE FUNCTION
+  get_or_create_zipcode(
+  _code VARCHAR(5)
+)
+  RETURNS INT
+AS $$
+DECLARE
+  _zipcode_id INT := (SELECT id
+                      FROM zipcode
+                      WHERE zipcode.code = _code);
+BEGIN
+  IF _zipcode_id IS NULL
+  THEN
+    INSERT INTO zipcode (code) VALUES (_code);
+  END IF;
+  _zipcode_id := (SELECT id
+                  FROM zipcode
+                  WHERE zipcode.code = _code);
+  RETURN _zipcode_id;
+  EXCEPTION
+  WHEN OTHERS THEN
+    RETURN FALSE;
+END; $$ LANGUAGE plpgsql;
 
 
-create or replace function
-update_status(
-  _num INT,
+CREATE OR REPLACE FUNCTION
+  add_person(
+  _firstname VARCHAR(32), _lastname VARCHAR(32), _email VARCHAR(128),
+  _phone     VARCHAR(10), _address TEXT, _town VARCHAR(32),
+  _zipcode   VARCHAR(5))
+  RETURNS BOOLEAN
+AS $$
+DECLARE
+  tid  INT :=(SELECT get_or_create_town(_town));
+  zid  INT :=(SELECT get_or_create_zipcode(_zipcode));
+
+  tzid INT := (SELECT id
+               FROM town_zipcode
+               WHERE town_zipcode.id_zipcode = zid AND town_zipcode.id_town = tid);
+BEGIN
+
+  IF tzid IS NULL
+  THEN
+    INSERT INTO town_zipcode (id_town, id_zipcode)
+    VALUES (tid, zid);
+  END IF;
+  tzid := (SELECT id
+           FROM town_zipcode
+           WHERE town_zipcode.id_zipcode = zid AND town_zipcode.id_town = tid);
+
+
+  INSERT INTO customer (firstname, lastname, email, phone, address, town_zipcode_id)
+  VALUES (_firstname, _lastname, _email, _phone, _address, tzid);
+  RETURN TRUE;
+  EXCEPTION
+  WHEN OTHERS THEN
+    RETURN FALSE;
+END; $$ LANGUAGE plpgsql;
+
+
+CREATE OR REPLACE FUNCTION
+  add_offer(
+  _code     VARCHAR(5), _name VARCHAR(32), _price FLOAT,
+  _nb_month INT, zone_from INT, zone_to INT)
+  RETURNS BOOLEAN
+AS $$ BEGIN
+  IF _nb_month <= 0
+     OR (SELECT id
+         FROM zone
+         WHERE zone.id = zone_from) IS NULL
+     OR (SELECT id
+         FROM zone
+         WHERE zone.id = zone_to) IS NULL
+  THEN
+    RETURN FALSE;
+  END IF;
+  INSERT INTO offer (code, name, price, duration, zone_from_id, zone_to_id)
+  VALUES (_code, _name, _price, _nb_month, zone_from, zone_to);
+  RETURN TRUE;
+  EXCEPTION
+  WHEN OTHERS THEN
+    RETURN FALSE;
+
+END; $$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION
+  customer_can_subscribe(_email VARCHAR(128))
+  RETURNS BOOLEAN
+AS $$
+BEGIN
+  IF (
+       SELECT status
+       FROM subscription
+         JOIN customer ON customer.id = subscription.customer_id
+       WHERE customer.email = _email AND (subscription.status = 'Incomplete' OR subscription.status = 'Pending')) IS
+     NULL
+  THEN
+    RETURN TRUE;
+  END IF;
+  RETURN FALSE;
+  EXCEPTION
+  WHEN OTHERS THEN
+    RETURN FALSE;
+END; $$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION
+  add_subscription(_num INT, _email VARCHAR(128), _code VARCHAR(5), _date_sub DATE)
+  RETURNS BOOLEAN
+AS $$
+DECLARE
+  _user_id  INT := (SELECT id
+                    FROM customer
+                    WHERE _email = customer.email);
+  _offer_id INT := (SELECT id
+                    FROM offer
+                    WHERE _code = offer.code);
+BEGIN
+  IF _user_id IS NULL OR _offer_id IS NULL OR (SELECT customer_can_subscribe(_email)) = FALSE
+  THEN
+    RETURN FALSE;
+  END IF;
+  INSERT INTO subscription (begin, number, status, customer_id, offer_id)
+  VALUES (_date_sub, _num, 'Incomplete', _user_id, _offer_id);
+  RETURN TRUE;
+  EXCEPTION
+  WHEN OTHERS THEN
+    RETURN FALSE;
+END; $$ LANGUAGE plpgsql;
+
+
+CREATE OR REPLACE FUNCTION
+  update_status(
+  _num        INT,
   _new_status VARCHAR(32))
   RETURNS BOOLEAN
-as $$ begin
-    if _new_status != 'Registered' AND _new_status != 'Pending' AND _new_status != 'Incomplete' THEN
-      return FALSE;
-    END IF;
-  UPDATE subscription set status = _new_status where subscription.number = _num;
-  return true;
-exception
-    when others then
-        return false;
-end; $$ language plpgsql;
-
-create or replace function
-update_offer_price ( _offer_code VARCHAR (5), _price FLOAT ) RETURNS BOOLEAN
-as $$ begin
-  IF _price < 0 or (select code from offer WHERE offer.code= _offer_code) is null THEN
-    return false;
+AS $$ BEGIN
+  IF _new_status != 'Registered' AND _new_status != 'Pending' AND _new_status != 'Incomplete'
+  THEN
+    RETURN FALSE;
   END IF;
-  UPDATE offer SET price = _price WHERE offer.code= _offer_code;
-  return true;
-exception
-    when others then
-        return false;
-end; $$ language plpgsql;
+  UPDATE subscription
+  SET status = _new_status
+  WHERE subscription.number = _num;
+  RETURN TRUE;
+  EXCEPTION
+  WHEN OTHERS THEN
+    RETURN FALSE;
+END; $$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION
+  update_offer_price(_offer_code VARCHAR(5), _price FLOAT)
+  RETURNS BOOLEAN
+AS $$ BEGIN
+  IF _price < 0 OR (SELECT code
+                    FROM offer
+                    WHERE offer.code = _offer_code) IS NULL
+  THEN
+    RETURN FALSE;
+  END IF;
+  UPDATE offer
+  SET price = _price
+  WHERE offer.code = _offer_code;
+  RETURN TRUE;
+  EXCEPTION
+  WHEN OTHERS THEN
+    RETURN FALSE;
+END; $$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE VIEW view_user_small_name AS
+  SELECT
+    lastname,
+    firstname
+  FROM customer
+  WHERE length(lastname) <= 4
+  ORDER BY lastname, firstname;
+
+CREATE OR REPLACE VIEW view_user_subscription AS
+  SELECT
+    concat(customer.lastname, ' ', customer.firstname) AS user,
+    offer.name                                         AS offer
+  FROM customer
+    JOIN subscription ON customer.id = subscription.customer_id
+    JOIN offer ON subscription.offer_id = offer.id;
+
+CREATE OR REPLACE VIEW view_unloved_offers AS
+  SELECT offer.name AS offer
+  FROM offer
+    LEFT JOIN subscription ON offer.id = subscription.offer_id
+  WHERE subscription.id IS NULL;
+
+CREATE OR REPLACE VIEW view_pending_subscriptions AS
+  SELECT
+    customer.lastname,
+    customer.firstname
+  FROM subscription
+    JOIN customer ON subscription.customer_id = customer.id
+  WHERE subscription.status = 'Pending';
+
+CREATE OR REPLACE VIEW view_old_subscription AS
+select customer.lastname, customer.firstname, offer.name as subscription, subscription.status
+from subscription
+  join customer on subscription.customer_id = customer.id
+  join offer on subscription.offer_id = offer.id
+where extract(YEAR from age(now(), subscription.begin::TIMESTAMP)) >= 1;
+
 /****
 create or replace function 
 
