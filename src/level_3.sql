@@ -142,6 +142,26 @@ AS $$ BEGIN
 END; $$
 LANGUAGE plpgsql;
 
+
+CREATE OR REPLACE VIEW view_employees AS
+  SELECT
+    customer.lastname,
+    customer.firstname,
+    employee.login AS login,
+    service.name   AS service
+  FROM customer
+    JOIN employee ON customer.id = employee.customer_id
+    JOIN contract ON employee.id = contract.employee_id
+    JOIN service ON contract.service_id = service.id;
+
+CREATE OR REPLACE VIEW view_employees AS
+  SELECT
+    service.name,
+    count(employee.login)
+  FROM service
+    LEFT JOIN contract ON service.id = contract.service_id
+    LEFT JOIN employee ON contract.employee_id = employee.id
+  GROUP BY service.name;
 /****
 create or replace function
 

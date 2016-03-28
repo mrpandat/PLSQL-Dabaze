@@ -228,6 +228,7 @@ BEGIN
   IF (
     (SELECT add_service('Sécurité', 10)) AND
     (SELECT add_service('Conduite', 50)) AND
+    (SELECT add_service('Le désert', 25)) AND
     (SELECT add_service('Conduite', 10)) = false  AND
     (SELECT add_service('la magie', 101)) = false AND
     (SELECT add_service('Informatique', 30))
