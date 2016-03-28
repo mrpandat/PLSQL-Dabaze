@@ -142,6 +142,7 @@ AS $$ BEGIN
 END; $$
 LANGUAGE plpgsql;
 
+/* REVOIR LE TRI DES VUES */
 
 CREATE OR REPLACE VIEW view_employees AS
   SELECT
