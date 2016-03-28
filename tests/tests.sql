@@ -220,6 +220,59 @@ BEGIN
     RAISE NOTICE '********* TESTS 16 FAIL ********';
   END IF;
 
+  RAISE NOTICE '-----------------------------------';
+  RAISE NOTICE '|          THRESHOLD 3            |';
+  RAISE NOTICE '-----------------------------------';
+
+
+  IF (
+    (SELECT add_service('Sécurité', 10)) AND
+    (SELECT add_service('Conduite', 50)) AND
+    (SELECT add_service('Conduite', 10)) = false  AND
+    (SELECT add_service('la magie', 101)) = false AND
+    (SELECT add_service('Informatique', 30))
+  )
+  THEN
+    RAISE NOTICE '********** TESTS 17 OK *********';
+  ELSE
+    RAISE NOTICE '********* TESTS 17 FAIL ********';
+  END IF;
+
+  IF (
+    (select add_contract('anduinlecho94@gmail.com', '12/08/2015', 'Informatique')) AND
+    (select add_contract('anduinlecho94@gmail.com', '12/08/1994', 'Informatique')) = false AND
+    (select add_contract('v.siffeh@hotmail.fr', '11/04/2016', 'Conduite')) AND
+    (select add_contract('r.eunte@hotmail.fr', '12/08/1994', 'Sécurité'))
+  )
+  THEN
+    RAISE NOTICE '********** TESTS 18 OK *********';
+  ELSE
+    RAISE NOTICE '********* TESTS 18 FAIL ********';
+  END IF;
+
+  IF (
+    (select end_contract('anduinlecho94@gmail.com', '12/08/1900')) = false AND
+    (select end_contract('anduinlecho94@gmail.com', '12/08/2018')) AND
+    (select end_contract('anduinlecho94@gmail.com', '12/08/2018')) = false AND
+    (select end_contract('r.eunte@hotmail.fr', '12/08/2015')) AND
+    (select end_contract('v.siffeh@hotmail.fr', '25/05/2018'))
+  )
+  THEN
+    RAISE NOTICE '********** TESTS 19 OK *********';
+  ELSE
+    RAISE NOTICE '********* TESTS 19 FAIL ********';
+  END IF;
+
+  IF (
+    (select update_service('Informatique', 10)) AND
+    (select update_service('Informatique', 101)) = FALSE AND
+    (select update_service('Conduite', 40))
+  )
+  THEN
+    RAISE NOTICE '********** TESTS 20 OK *********';
+  ELSE
+    RAISE NOTICE '********* TESTS 20 FAIL ********';
+  END IF;
 
   RETURN TRUE;
 END; $$ LANGUAGE plpgsql;

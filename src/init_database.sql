@@ -106,8 +106,8 @@ CREATE TABLE service (
 
 CREATE TABLE contract (
   id          SERIAL NOT NULL PRIMARY KEY,
-  departure   DATE,
   hire_date   DATE   NOT NULL,
+  end_date   DATE,
   employee_id SERIAL REFERENCES employee (id),
   service_id  SERIAL REFERENCES service (id)
 );
