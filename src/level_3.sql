@@ -16,11 +16,11 @@ END; $$ LANGUAGE plpgsql;
 
 CREATE OR REPLACE FUNCTION
   new_login(_lastname VARCHAR(64), _firstname VARCHAR(64))
-  RETURNS CHAR(9)
+  RETURNS VARCHAR(9)
 AS $$
 DECLARE
   _login  VARCHAR(7) := concat(substr(_lastname, 0, 7), '_');
-  _nlogin CHAR(9);
+  _nlogin VARCHAR(9);
   a       INT := 97;
 BEGIN
   IF (SELECT employee.login
@@ -61,7 +61,7 @@ DECLARE
                      FROM customer
                      WHERE customer.email = _email
                      LIMIT 1);
-  _login     CHAR(9) := new_login(_lastname, _firstname);
+  _login     VARCHAR(9) := new_login(_lastname, _firstname);
   _eid       INT := 0;
   _sid       INT := (SELECT id
                      FROM service
@@ -165,9 +165,23 @@ CREATE OR REPLACE VIEW view_nb_employees_per_service AS
     LEFT JOIN employee ON contract.employee_id = employee.id
   GROUP BY service.name
   ORDER BY service.name;
+
+CREATE OR REPLACE FUNCTION
+  list_login_employee(_date_service DATE)
+  RETURNS SETOF VARCHAR(8)
+AS $$ BEGIN
+  RETURN QUERY (SELECT employee.login
+                FROM employee
+                  JOIN contract ON employee.id = contract.employee_id
+                  JOIN service ON contract.service_id = service.id
+                WHERE (_date_service > contract.hire_date AND contract.end_date IS NULL) OR
+                      (_date_service BETWEEN contract.hire_date AND contract.end_date)
+                ORDER BY employee.login);
+END; $$
+LANGUAGE plpgsql;
+
 /****
 create or replace function
-
 as $$ begin
 exception
     when others then

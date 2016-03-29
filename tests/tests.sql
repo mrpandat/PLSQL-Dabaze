@@ -255,8 +255,7 @@ BEGIN
     (select end_contract('anduinlecho94@gmail.com', '12/08/1900')) = false AND
     (select end_contract('anduinlecho94@gmail.com', '12/08/2018')) AND
     (select end_contract('anduinlecho94@gmail.com', '12/08/2018')) = false AND
-    (select end_contract('r.eunte@hotmail.fr', '12/08/2015')) AND
-    (select end_contract('v.siffeh@hotmail.fr', '25/05/2018'))
+    (select end_contract('r.eunte@hotmail.fr', '12/08/2015'))
   )
   THEN
     RAISE NOTICE '********** TESTS 19 OK *********';

@@ -93,7 +93,7 @@ CREATE TABLE billing (
 
 CREATE TABLE employee (
   id          SERIAL  NOT NULL PRIMARY KEY,
-  login       CHAR(8) NOT NULL UNIQUE,
+  login       VARCHAR(8) NOT NULL UNIQUE,
   customer_id SERIAL REFERENCES customer (id)
 );
 
