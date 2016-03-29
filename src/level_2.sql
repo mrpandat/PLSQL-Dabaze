@@ -266,13 +266,13 @@ CREATE OR REPLACE FUNCTION
   RETURNS SETOF VARCHAR(5)
 AS $$ BEGIN
   RETURN QUERY (
-    SELECT offer.code as offer_code
+    SELECT offer.code AS offer_code
     FROM offer
       JOIN subscription ON offer.id = subscription.offer_id
       JOIN customer ON subscription.customer_id = customer.id
-      WHERE subscription.status = 'Registered'
-            AND customer.email = _email
-            AND subscription.begin = _date
+    WHERE subscription.status = 'Registered'
+          AND customer.email = _email
+          AND subscription.begin = _date
     ORDER BY offer.code);
 END; $$ LANGUAGE plpgsql;
 

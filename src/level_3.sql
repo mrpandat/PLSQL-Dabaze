@@ -117,9 +117,7 @@ BEGIN
   SET end_date = _date_end
   WHERE contract.id = _cid;
   RETURN TRUE;
-  EXCEPTION
-  WHEN OTHERS THEN
-    RETURN FALSE;
+
 END; $$
 LANGUAGE plpgsql;
 
@@ -179,6 +177,29 @@ AS $$ BEGIN
                 ORDER BY employee.login);
 END; $$
 LANGUAGE plpgsql;
+
+
+CREATE OR REPLACE FUNCTION
+  list_not_employee(_date_service DATE)
+  RETURNS TABLE(lastname VARCHAR(32), firstname VARCHAR(32), has_worked TEXT)
+AS $$ BEGIN
+  RETURN QUERY (
+    SELECT
+      customer.lastname,
+      customer.firstname,
+      CASE
+      WHEN (contract.hire_date IS NOT NULL AND _date_service > contract.hire_date)
+        THEN 'YES'
+      ELSE 'NO'
+      END
+        AS has_worked
+    FROM customer
+      LEFT JOIN employee ON customer.id = employee.customer_id
+      LEFT JOIN contract ON employee.id = contract.employee_id
+    ORDER BY lastname, firstname
+  );
+END; $$ LANGUAGE plpgsql;
+
 
 /****
 create or replace function
