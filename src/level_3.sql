@@ -153,16 +153,18 @@ CREATE OR REPLACE VIEW view_employees AS
   FROM customer
     JOIN employee ON customer.id = employee.customer_id
     JOIN contract ON employee.id = contract.employee_id
-    JOIN service ON contract.service_id = service.id;
+    JOIN service ON contract.service_id = service.id
+  ORDER BY lastname, firstname, login;
 
-CREATE OR REPLACE VIEW view_employees AS
+CREATE OR REPLACE VIEW view_nb_employees_per_service AS
   SELECT
     service.name,
     count(employee.login)
   FROM service
     LEFT JOIN contract ON service.id = contract.service_id
     LEFT JOIN employee ON contract.employee_id = employee.id
-  GROUP BY service.name;
+  GROUP BY service.name
+  ORDER BY service.name;
 /****
 create or replace function
 
