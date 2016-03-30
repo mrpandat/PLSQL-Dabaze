@@ -106,7 +106,7 @@ DECLARE
                FROM contract
                  JOIN employee ON contract.employee_id = employee.id
                  JOIN customer ON employee.customer_id = customer.id
-               WHERE customer.email = _email AND contract.end_date IS NULL AND _date_end >= contract.hire_date
+               WHERE customer.email = _email AND _date_end >= contract.hire_date
   );
 BEGIN
   IF _cid IS NULL
@@ -207,7 +207,7 @@ AS $$ BEGIN
                 FROM (SELECT
                         'sub'                                            AS type,
                         offer.name,
-                        subscription.begin,
+                        subscription.begin as start_date,
                         concat(offer.duration * 30, ' days') :: INTERVAL AS duration
                       FROM customer
                         JOIN subscription ON customer.id = subscription.customer_id
@@ -231,7 +231,7 @@ AS $$ BEGIN
                       WHERE customer.email = _email
 
                      ) AS s1
-                ORDER BY begin
+                ORDER BY start_date
   );
 END; $$
 LANGUAGE plpgsql;
