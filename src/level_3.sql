@@ -140,7 +140,6 @@ AS $$ BEGIN
 END; $$
 LANGUAGE plpgsql;
 
-/* REVOIR LE TRI DES VUES */
 
 CREATE OR REPLACE VIEW view_employees AS
   SELECT
@@ -200,7 +199,42 @@ AS $$ BEGIN
   );
 END; $$ LANGUAGE plpgsql;
 
+CREATE OR REPLACE FUNCTION
+  list_subscription_history(_email VARCHAR(128))
+  RETURNS TABLE(type TEXT, name VARCHAR, start_date DATE, duration INTERVAL)
+AS $$ BEGIN
+  RETURN QUERY (SELECT *
+                FROM (SELECT
+                        'sub'                                            AS type,
+                        offer.name,
+                        subscription.begin,
+                        concat(offer.duration * 30, ' days') :: INTERVAL AS duration
+                      FROM customer
+                        JOIN subscription ON customer.id = subscription.customer_id
+                        JOIN offer ON subscription.offer_id = offer.id
+                      WHERE customer.email = _email
+                      UNION
 
+                      SELECT
+                        'ctr',
+                        service.name,
+                        contract.hire_date,
+                        CASE WHEN contract.end_date IS NULL
+                          THEN NULL
+                        WHEN contract.end_date IS NOT NULL
+                          THEN concat(contract.end_date - contract.hire_date, ' days') :: INTERVAL
+                        END
+                      FROM employee
+                        JOIN contract ON employee.id = contract.employee_id
+                        JOIN service ON contract.service_id = service.id
+                        JOIN customer ON employee.customer_id = customer.id
+                      WHERE customer.email = _email
+
+                     ) AS s1
+                ORDER BY begin
+  );
+END; $$
+LANGUAGE plpgsql;
 /****
 create or replace function
 as $$ begin

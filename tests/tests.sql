@@ -182,7 +182,6 @@ BEGIN
   END IF;
 
   IF (
-    (SELECT add_subscription(1, 'v.siffeh@hotmail.fr', 'AAAAA', '01/02/2016')) AND
     (SELECT add_subscription(2, 'j.ouisarde@outlook.fr', 'AAAAA', '01/02/2014')) AND
     (SELECT add_subscription(2, 'r.eunte@hotmail.fr', 'AAAAA', '03/03/2015') = FALSE) AND
     (SELECT add_subscription(5, 'r.eunte@hotmail.fr', 'AAAAA', '03/03/2015')) AND
