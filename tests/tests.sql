@@ -185,12 +185,12 @@ BEGIN
   END IF;
 
   IF (
-    (SELECT add_subscription(2, 'j.ouisarde@outlook.fr', 'AAAAA', '01/02/2014')) AND
-    (SELECT add_subscription(2, 'r.eunte@hotmail.fr', 'AAAAA', '03/03/2015') = FALSE) AND
-    (SELECT add_subscription(3, 'anduinlecho94@gmail.com', 'BBBBB', '04/10/2015')) AND
-    (SELECT add_subscription(4, 'anduinlecho94@gmail.com', 'CCCCC', '04/10/2015') = FALSE) AND
-    (SELECT add_subscription(5, 'r.eunte@hotmail.fr', 'AAAAA', '03/03/2015')) AND
-    (SELECT add_subscription(6, 'u.pah@hotmail.fr', 'CCCCC', '24/12/2017'))
+    (SELECT add_subscription(2, 'j.ouisarde@outlook.fr', 'AAAAA', '2014-02-01')) AND
+    (SELECT add_subscription(2, 'r.eunte@hotmail.fr', 'AAAAA', '2015-03-03') = FALSE) AND
+    (SELECT add_subscription(3, 'anduinlecho94@gmail.com', 'BBBBB', '2015-10-04')) AND
+    (SELECT add_subscription(4, 'anduinlecho94@gmail.com', 'CCCCC', '2015-10-04') = FALSE) AND
+    (SELECT add_subscription(5, 'r.eunte@hotmail.fr', 'AAAAA', '2015-03-03')) AND
+    (SELECT add_subscription(6, 'u.pah@hotmail.fr', 'CCCCC', '2017-12-24'))
   )
   THEN
     RAISE NOTICE '********** TESTS 14 OK *********';
@@ -243,10 +243,10 @@ BEGIN
   END IF;
 
   IF (
-    (SELECT add_contract('anduinlecho94@gmail.com', '12/08/2015', 'Informatique')) AND
-    (SELECT add_contract('anduinlecho94@gmail.com', '12/08/1994', 'Informatique')) = FALSE AND
-    (SELECT add_contract('v.siffeh@hotmail.fr', '11/04/2016', 'Conduite')) AND
-    (SELECT add_contract('r.eunte@hotmail.fr', '12/08/1994', 'Sécurité'))
+    (SELECT add_contract('anduinlecho94@gmail.com', '2015-08-12', 'Informatique')) AND
+    (SELECT add_contract('anduinlecho94@gmail.com', '1994-08-12', 'Informatique')) = FALSE AND
+    (SELECT add_contract('v.siffeh@hotmail.fr', '2016-03-11', 'Conduite')) AND
+    (SELECT add_contract('r.eunte@hotmail.fr', '1994-08-12', 'Sécurité'))
   )
   THEN
     RAISE NOTICE '********** TESTS 18 OK *********';
@@ -255,10 +255,10 @@ BEGIN
   END IF;
 
   IF (
-    (SELECT end_contract('anduinlecho94@gmail.com', '12/08/1900')) = FALSE AND
-    (SELECT end_contract('anduinlecho94@gmail.com', '12/08/2018')) AND
-    (SELECT end_contract('anduinlecho94@gmail.com', '12/08/2018')) AND
-    (SELECT end_contract('r.eunte@hotmail.fr', '12/08/2015'))
+    (SELECT end_contract('anduinlecho94@gmail.com', '1900-08-12')) = FALSE AND
+    (SELECT end_contract('anduinlecho94@gmail.com', '2018-08-12')) AND
+    (SELECT end_contract('anduinlecho94@gmail.com', '2018-08-12')) AND
+    (SELECT end_contract('r.eunte@hotmail.fr', '2015-08-12'))
   )
   THEN
     RAISE NOTICE '********** TESTS 19 OK *********';

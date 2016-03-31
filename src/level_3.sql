@@ -75,7 +75,7 @@ BEGIN
       FROM contract
         JOIN employee ON contract.employee_id = employee.id
         JOIN customer ON employee.customer_id = customer.id
-      WHERE customer.email = _email AND (now() < contract.end_date OR contract.end_date IS NULL)
+      WHERE customer.email = _email AND (_date_beginning < contract.end_date OR contract.end_date IS NULL)
      ) IS NOT NULL
   THEN
     RETURN FALSE;
