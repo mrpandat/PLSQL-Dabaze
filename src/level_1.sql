@@ -292,13 +292,4 @@ BEGIN
 END; $$ LANGUAGE plpgsql;
 
 
-/****
-Create or replace function 
 
-AS $$ begin
-
-EXCEPTION
-    WHEN others THEN
-        RETURN false;
-end; $$ language plpgsql;
-**/

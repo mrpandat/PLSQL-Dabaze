@@ -277,6 +277,24 @@ BEGIN
     RAISE NOTICE '********* TESTS 20 FAIL ********';
   END IF;
 
+  RAISE NOTICE '-----------------------------------';
+  RAISE NOTICE '|          THRESHOLD 4            |';
+  RAISE NOTICE '-----------------------------------';
+
+  IF (
+    (SELECT add_journey('anduinlecho94@gmail.com', '2015-06-01', '2015-06-01', 1, 5)) AND
+    (SELECT add_journey('r.eunte@hotmail.fr', '2015-06-02', '2015-06-02', 2, 4)) AND
+    (SELECT add_journey('r.eunte@hotmail.fr', '2017-06-01', '2019-06-01', 1, 5)) = FALSE AND
+    (SELECT add_journey('anduinlecho94@gmail.com', '2015-06-01', '2015-06-01', 1, 5)) = FALSE AND
+    (SELECT add_journey('r.eunte@hotmail.fr', '2015-07-02', '2015-07-02', 2, 4))
+
+  )
+  THEN
+    RAISE NOTICE '********** TESTS 21 OK *********';
+  ELSE
+    RAISE NOTICE '********* TESTS 21 FAIL ********';
+  END IF;
+
   RETURN TRUE;
 END; $$ LANGUAGE plpgsql;
 

@@ -75,7 +75,8 @@ BEGIN
       FROM contract
         JOIN employee ON contract.employee_id = employee.id
         JOIN customer ON employee.customer_id = customer.id
-      WHERE customer.email = _email AND (_date_beginning < contract.end_date OR contract.end_date IS NULL)
+      WHERE customer.email = _email AND
+            (_date_beginning < contract.end_date OR contract.end_date IS NULL OR _date_beginning < contract.hire_date)
      ) IS NOT NULL
   THEN
     RETURN FALSE;
@@ -207,7 +208,7 @@ AS $$ BEGIN
                 FROM (SELECT
                         'sub'                                            AS type,
                         offer.name,
-                        subscription.begin as start_date,
+                        subscription.begin                               AS start_date,
                         concat(offer.duration * 30, ' days') :: INTERVAL AS duration
                       FROM customer
                         JOIN subscription ON customer.id = subscription.customer_id
