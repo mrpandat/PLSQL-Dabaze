@@ -26,7 +26,9 @@ BEGIN
     (SELECT add_zone('zone_2', 40.5)) AND
     (SELECT add_zone('zone_3', 52.7)) AND
     (SELECT add_zone('zone_4', 42.5)) AND
-    (SELECT add_zone('zone_5', 78.3))
+    (SELECT add_zone('zone_5', 78.3)) AND
+    (SELECT add_zone('zone_42', 0.00333)) = FALSE
+
   )
   THEN
     RAISE NOTICE '********** TESTS 2 OK **********';
@@ -184,9 +186,10 @@ BEGIN
   IF (
     (SELECT add_subscription(2, 'j.ouisarde@outlook.fr', 'AAAAA', '01/02/2014')) AND
     (SELECT add_subscription(2, 'r.eunte@hotmail.fr', 'AAAAA', '03/03/2015') = FALSE) AND
-    (SELECT add_subscription(5, 'r.eunte@hotmail.fr', 'AAAAA', '03/03/2015')) AND
     (SELECT add_subscription(3, 'anduinlecho94@gmail.com', 'BBBBB', '04/10/2015')) AND
-    (SELECT add_subscription(4, 'anduinlecho94@gmail.com', 'CCCCC', '04/10/2015') = FALSE)
+    (SELECT add_subscription(4, 'anduinlecho94@gmail.com', 'CCCCC', '04/10/2015') = FALSE) AND
+    (SELECT add_subscription(5, 'r.eunte@hotmail.fr', 'AAAAA', '03/03/2015')) AND
+    (SELECT add_subscription(6, 'u.pah@hotmail.fr', 'CCCCC', '24/12/2017'))
   )
   THEN
     RAISE NOTICE '********** TESTS 14 OK *********';
@@ -228,8 +231,8 @@ BEGIN
     (SELECT add_service('Sécurité', 10)) AND
     (SELECT add_service('Conduite', 50)) AND
     (SELECT add_service('Le désert', 25)) AND
-    (SELECT add_service('Conduite', 10)) = false  AND
-    (SELECT add_service('la magie', 101)) = false AND
+    (SELECT add_service('Conduite', 10)) = FALSE AND
+    (SELECT add_service('la magie', 101)) = FALSE AND
     (SELECT add_service('Informatique', 30))
   )
   THEN
@@ -239,10 +242,10 @@ BEGIN
   END IF;
 
   IF (
-    (select add_contract('anduinlecho94@gmail.com', '12/08/2015', 'Informatique')) AND
-    (select add_contract('anduinlecho94@gmail.com', '12/08/1994', 'Informatique')) = false AND
-    (select add_contract('v.siffeh@hotmail.fr', '11/04/2016', 'Conduite')) AND
-    (select add_contract('r.eunte@hotmail.fr', '12/08/1994', 'Sécurité'))
+    (SELECT add_contract('anduinlecho94@gmail.com', '12/08/2015', 'Informatique')) AND
+    (SELECT add_contract('anduinlecho94@gmail.com', '12/08/1994', 'Informatique')) = FALSE AND
+    (SELECT add_contract('v.siffeh@hotmail.fr', '11/04/2016', 'Conduite')) AND
+    (SELECT add_contract('r.eunte@hotmail.fr', '12/08/1994', 'Sécurité'))
   )
   THEN
     RAISE NOTICE '********** TESTS 18 OK *********';
@@ -251,10 +254,10 @@ BEGIN
   END IF;
 
   IF (
-    (select end_contract('anduinlecho94@gmail.com', '12/08/1900')) = false AND
-    (select end_contract('anduinlecho94@gmail.com', '12/08/2018')) AND
-    (select end_contract('anduinlecho94@gmail.com', '12/08/2018')) AND
-    (select end_contract('r.eunte@hotmail.fr', '12/08/2015'))
+    (SELECT end_contract('anduinlecho94@gmail.com', '12/08/1900')) = FALSE AND
+    (SELECT end_contract('anduinlecho94@gmail.com', '12/08/2018')) AND
+    (SELECT end_contract('anduinlecho94@gmail.com', '12/08/2018')) AND
+    (SELECT end_contract('r.eunte@hotmail.fr', '12/08/2015'))
   )
   THEN
     RAISE NOTICE '********** TESTS 19 OK *********';
@@ -263,9 +266,9 @@ BEGIN
   END IF;
 
   IF (
-    (select update_service('Informatique', 10)) AND
-    (select update_service('Informatique', 101)) = FALSE AND
-    (select update_service('Conduite', 40))
+    (SELECT update_service('Informatique', 10)) AND
+    (SELECT update_service('Informatique', 101)) = FALSE AND
+    (SELECT update_service('Conduite', 40))
   )
   THEN
     RAISE NOTICE '********** TESTS 20 OK *********';

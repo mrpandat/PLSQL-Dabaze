@@ -88,6 +88,7 @@ CREATE OR REPLACE FUNCTION
   _nb_month INT, zone_from INT, zone_to INT)
   RETURNS BOOLEAN
 AS $$ BEGIN
+  _price := round(_price::NUMERIC, 2);
   IF _nb_month <= 0
      OR (SELECT id
          FROM zone
@@ -175,6 +176,7 @@ CREATE OR REPLACE FUNCTION
   update_offer_price(_offer_code VARCHAR(5), _price FLOAT)
   RETURNS BOOLEAN
 AS $$ BEGIN
+  _price := round(_price::NUMERIC, 2);
   IF _price < 0 OR (SELECT code
                     FROM offer
                     WHERE offer.code = _offer_code) IS NULL

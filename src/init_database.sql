@@ -43,7 +43,7 @@ CREATE TABLE zone (
 
 CREATE TABLE station (
   id           INT         NOT NULL PRIMARY KEY,
-  name         VARCHAR(64) NOT NULL UNIQUE,
+  name         VARCHAR(64) NOT NULL,
   transport_id SERIAL REFERENCES transport (id),
   town_id      SERIAL REFERENCES town (id),
   zone_id      SERIAL REFERENCES zone (id)

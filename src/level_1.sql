@@ -23,7 +23,11 @@ CREATE OR REPLACE FUNCTION
   RETURNS BOOLEAN
 
 AS $$ BEGIN
-
+  price := round(price :: NUMERIC, 2);
+  IF price <= 0
+  THEN
+    RETURN FALSE;
+  END IF;
   INSERT INTO zone (price, name)
   VALUES (price, name);
 
@@ -120,6 +124,10 @@ DECLARE
                   FROM line
                   WHERE line.code = _line);
 BEGIN
+  IF _pos <= 0
+  THEN
+    RETURN FALSE;
+  END IF;
   INSERT INTO station_line (id_station, id_line, position)
   VALUES (_station, line_id, _pos);
   RETURN TRUE;
@@ -163,13 +171,14 @@ CREATE OR REPLACE VIEW view_nb_station_type AS
 
 CREATE OR REPLACE VIEW view_line_duration AS
   SELECT
-    transport.name              AS type,
-    id_line                     AS line,
-    sum(transport.avg_interval) AS minutes
-  FROM station_line
+    transport.name                                       AS type,
+    id_line                                              AS line,
+    sum(transport.avg_interval) - transport.avg_interval AS minutes
+  FROM line
+    LEFT JOIN station_line ON line.id = station_line.id_line
     JOIN station ON station_line.id_station = station.id
     JOIN transport ON transport.id = station.transport_id
-  GROUP BY id_line, transport.name
+  GROUP BY id_line, transport.name, transport.avg_interval
   ORDER BY type, line;
 
 CREATE OR REPLACE VIEW view_a_station_capacity AS
