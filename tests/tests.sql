@@ -13,7 +13,8 @@ BEGIN
     (SELECT add_transport_type('TMW', 'tramway', 100, 2)) AND
     (SELECT add_transport_type('BUS', 'bus', 50, 4)) AND
     (SELECT add_transport_type('RER', 'train', 350, 5)) AND
-    (SELECT add_transport_type('MTR', 'metro', 300, 3))
+    (SELECT add_transport_type('MTR', 'metro', 300, 3)) AND
+    (SELECT add_transport_type('LOL', '', 300, 3)) = FALSE
   )
   THEN
     RAISE NOTICE '********** TESTS 1 OK **********';

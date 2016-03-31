@@ -5,7 +5,10 @@ CREATE OR REPLACE FUNCTION
   capacity     INT,
   avg_interval INT)
   RETURNS BOOLEAN AS $$ BEGIN
-
+  IF name = ''
+  THEN
+    RETURN FALSE;
+  END IF;
   INSERT INTO transport (code, name, capacity, avg_interval)
   VALUES (code, name, capacity, avg_interval);
 
