@@ -146,4 +146,3 @@ CREATE TABLE station_line (
   position   INT    NOT NULL,
   UNIQUE (position, id_line)
 );
-

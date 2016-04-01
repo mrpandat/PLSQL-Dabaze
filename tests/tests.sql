@@ -215,7 +215,7 @@ BEGIN
     (SELECT update_offer_price('AAAAA', 250)) AND
     (SELECT update_offer_price('BBBBB', -250)) = FALSE AND
     (SELECT update_offer_price('zgpoijzeop', 250)) = FALSE AND
-    (SELECT update_offer_price('CCCCC', 0))
+    (SELECT update_offer_price('CCCCC', 100))
   )
   THEN
     RAISE NOTICE '********** TESTS 16 OK *********';
@@ -293,6 +293,20 @@ BEGIN
     RAISE NOTICE '********** TESTS 21 OK *********';
   ELSE
     RAISE NOTICE '********* TESTS 21 FAIL ********';
+  END IF;
+
+  IF (
+    (SELECT add_subscription(7, 'r.eunte@hotmail.fr', 'BBBBB', '2015-04-03')) AND
+    (SELECT update_status(7, 'Registered')) AND
+    (SELECT add_subscription(8, 'r.eunte@hotmail.fr', 'BBBBB', '2015-07-03')) AND
+    (SELECT add_journey('r.eunte@hotmail.fr', '2015-08-02', '2015-08-02', 2, 4)) AND
+    (SELECT add_journey('r.eunte@hotmail.fr', '2015-09-02', '2015-09-02', 2, 4))
+
+  )
+  THEN
+    RAISE NOTICE '********** TESTS 22 OK *********';
+  ELSE
+    RAISE NOTICE '********* TESTS 22 FAIL ********';
   END IF;
 
   RETURN TRUE;
