@@ -24,7 +24,9 @@ BEGIN
   INSERT INTO journey (begining, ending, start_station_id, end_station_id, customer_id)
   VALUES (_time_start, _time_end, _station_start, _station_end, cid);
   RETURN TRUE;
-
+  EXCEPTION
+  WHEN OTHERS THEN
+    RETURN FALSE ;
 END; $$ LANGUAGE plpgsql;
 
 
@@ -65,14 +67,3 @@ DECLARE
 BEGIN
   return a;
 END; $$ LANGUAGE plpgsql;
-
-/****
-Create or replace function
-
-AS $$ begin
-
-EXCEPTION
-    WHEN others THEN
-        RETURN false;
-end; $$ language plpgsql;
-**/

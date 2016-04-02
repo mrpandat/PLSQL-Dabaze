@@ -94,6 +94,9 @@ BEGIN
   VALUES (_date_beginning, NULL, _eid, _sid);
 
   RETURN TRUE;
+  EXCEPTION
+  WHEN OTHERS THEN
+    RETURN FALSE ;
 END; $$
 LANGUAGE plpgsql;
 
@@ -118,7 +121,9 @@ BEGIN
   SET end_date = _date_end
   WHERE contract.id = _cid;
   RETURN TRUE;
-
+  EXCEPTION
+  WHEN OTHERS THEN
+    RETURN FALSE ;
 END; $$
 LANGUAGE plpgsql;
 
@@ -236,13 +241,3 @@ AS $$ BEGIN
   );
 END; $$
 LANGUAGE plpgsql;
-/****
-create or replace function
-as $$ begin
-exception
-    when others then
-        return false;
-end; $$
-language plpgsql;
-
-**/

@@ -277,15 +277,3 @@ AS $$ BEGIN
           AND subscription.begin = _date
     ORDER BY offer.code);
 END; $$ LANGUAGE plpgsql;
-
-/****
-create or replace function 
-
-as $$ begin
-
-exception
-    when others then
-        return false;
-end; $$ language plpgsql;
-
-**/
